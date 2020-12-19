@@ -21,18 +21,22 @@ const computeHash = (s) => {
     return md5sum.digest('hex');
 }
 
-const compile = (filename, output) => {
-    return new Promise(function (resolve, reject) {
-        compileProcess = spawn('g++', [filename, '-o', output]);
+const compile = (filename, output) => new Promise(function (resolve, reject) {
+    compileProcess = spawn('g++', [filename, '-o', output]);
+    var error;
 
-        compileProcess.on('close', (code) => {
-            resolve(code);
-        });
-        compileProcess.on('error', (data) => {
-            reject(data);
-        })
+    compileProcess.on('close', (code) => {
+        resolve(code);
     });
-}
+
+    compileProcess.stderr.on('data', (data) => {
+        error = data;
+    })
+
+    compileProcess.on('error', (data) => {
+        reject(error);
+    })
+});
 
 const runSolution = (binaryPath) => {
     return new Promise(function (resolve, reject) {
