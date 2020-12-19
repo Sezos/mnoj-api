@@ -34,7 +34,7 @@ const compile = (filename, output) => new Promise(function (resolve, reject) {
     })
 
     compileProcess.on('error', (data) => {
-        reject(error);
+        reject(error | data);
     })
 });
 
