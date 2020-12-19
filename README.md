@@ -6,7 +6,14 @@ API for MNOJ. Currently hosted in Heroku.
 
 ### Submit solution
 
-> **Route**: POST `/submit_solution`
-> **Parameters**:
+> **Route**: POST `/submit_solution` > **Parameters**:
+>
+> - `code` - solution
+>
+> **Returns**:
+>
+> - `output` - output of the code.
 
-- `code` - solution
+# TODO
+
+- Make test script
