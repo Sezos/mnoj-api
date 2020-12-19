@@ -29,7 +29,7 @@ const compile = (filename, output) => new Promise(function (resolve, reject) {
         resolve(code);
     });
 
-    compileProcess.stderr.on('data', (data) => {
+    compileProcess.stdout.on('data', (data) => {
         error = data;
     })
 
@@ -59,6 +59,30 @@ const checkCode = (code) => {
 
     return false;
 }
+
+app.get('/test', async (req, res) => {
+    const sendResponse = (data) => res.send(JSON.stringify(data));
+    testFile = "hello_world.cpp";
+    testExec = testFile.split('.')[0];
+
+    await compile(`test_codes/${testFile}`, `cache/${testExec}`)
+        .then(
+            () => runSolution(`cache/${testExec}`)
+            .then(
+                (output) => sendResponse({
+                    output: `${output}`
+                }),
+                (error) => sendResponse({
+                    error: "Error during running",
+                    msg: `${error}`,
+                }),
+            ),
+            (error) => sendResponse({
+                error: "Error during compile",
+                msg: `${error}`,
+            })
+        );
+});
 
 app.post('/submit_solution', async (req, res) => {
     const sendResponse = (data) => res.send(JSON.stringify(data));
