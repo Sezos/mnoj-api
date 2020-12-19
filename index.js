@@ -2,6 +2,7 @@ var express = require("express");
 var fs = require("fs");
 var crypto = require("crypto");
 var bodyParser = require('body-parser');
+
 const {
     spawn
 } = require('child_process');
@@ -69,9 +70,13 @@ app.post('/submit_solution', async (req, res) => {
     const hash = computeHash(code);
     const filename = `cache/${hash}.cpp`;
 
+    if (!fs.existsSync('cache')) {
+        await fs.promises.mkdir('cache');
+    }
+
     await fs.promises.writeFile(filename, code);
 
-    compile(filename, `cache/${hash}`)
+    await compile(filename, `cache/${hash}`)
         .then(
             () => runSolution(`cache/${hash}`)
             .then(
