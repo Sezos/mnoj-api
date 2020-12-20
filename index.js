@@ -22,7 +22,7 @@ const computeHash = (s) => {
 }
 
 const compile = (filename, output) => new Promise(function (resolve, reject) {
-    compileProcess = spawn('g++', [filename, '-o', output]);
+    compileProcess = spawn('gcc', [filename, '-o', output, '-lstdc++']);
     var error;
 
     compileProcess.on('close', (code) => {
