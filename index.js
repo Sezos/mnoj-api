@@ -1,5 +1,5 @@
 var tmpdir = '/tmp';
-tmpdir = '.';
+// tmpdir = '.';
 var express = require("express");
 var fs = require("fs");
 var crypto = require("crypto");
@@ -46,7 +46,7 @@ const compile = (filename, output) => new Promise(function (resolve, reject) {
 
 const runSolution = (binaryPath) => {
     return new Promise(function (resolve, reject) {
-        run = spawn(`./${binaryPath}`);
+        run = spawn(`${binaryPath}`);
         run.stdout.on('data', (data) => {
             resolve(data);
         });
