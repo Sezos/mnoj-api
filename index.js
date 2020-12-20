@@ -1,7 +1,13 @@
+var tmpdir = '/tmp';
+tmpdir = '.';
 var express = require("express");
 var fs = require("fs");
 var crypto = require("crypto");
 var bodyParser = require('body-parser');
+
+if (!fs.existsSync(`${tmpdir}/cache`)) {
+    fs.promises.mkdir(`${tmpdir}/cache`);
+}
 
 const {
     spawn
@@ -65,9 +71,9 @@ app.get('/test', async (req, res) => {
     testFile = "hello_world.cpp";
     testExec = testFile.split('.')[0];
 
-    await compile(`test_codes/${testFile}`, `cache/${testExec}`)
+    await compile(`test_codes/${testFile}`, `${tmpdir}/cache/${testExec}`)
         .then(
-            () => runSolution(`cache/${testExec}`)
+            () => runSolution(`${tmpdir}/cache/${testExec}`)
             .then(
                 (output) => sendResponse({
                     output: `${output}`
@@ -96,17 +102,15 @@ app.post('/submit_solution', async (req, res) => {
     }
 
     const hash = computeHash(code);
-    const filename = `cache/${hash}.cpp`;
+    const filename = `${tmpdir}/cache/${hash}.cpp`;
 
-    if (!fs.existsSync('cache')) {
-        await fs.promises.mkdir('cache');
-    }
+
 
     await fs.promises.writeFile(filename, code);
 
-    await compile(filename, `cache/${hash}`)
+    await compile(filename, `${tmpdir}/cache/${hash}`)
         .then(
-            () => runSolution(`cache/${hash}`)
+            () => runSolution(`${tmpdir}/cache/${hash}`)
             .then(
                 (output) => sendResponse({
                     output: `${output}`
