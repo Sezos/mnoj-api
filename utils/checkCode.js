@@ -5,5 +5,7 @@ module.exports = (code) => {
         if (code.match(check)) return true;
     }
 
+
+
     return false;
 }

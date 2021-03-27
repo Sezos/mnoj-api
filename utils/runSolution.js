@@ -3,16 +3,11 @@ var {
 } = require('child_process');
 
 module.exports = (binaryPath, timeout) => new Promise(function (resolve, reject) {
-    var run = spawn(`${binaryPath}`);
+    var run = spawn(`${binaryPath}`, [], {
+        timeout: timeout || 10000,
+        maxBuffer: 1024 * 1024 * 500
+    });
     var startTime = Date.now();
-
-    setTimeout(
-        () => {
-            run.kill();
-            reject(`10s Timeout!`);
-        },
-        timeout || 10000
-    );
 
     run.on('close', (data) => {
         endTime = Date.now();
